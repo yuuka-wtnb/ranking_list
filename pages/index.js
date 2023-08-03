@@ -1,7 +1,8 @@
 import { images } from "@/next.config";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
-import { Card,CardBody,CardTitle } from "reactstrap";
+import { Card,CardBody,CardText,CardTitle, Col, Input, Row } from "reactstrap";
+import styles from './styles.module.css'
 
 export default function Home() {
   const [data, Setdata] = useState([]);
@@ -39,18 +40,33 @@ export default function Home() {
       <main>
         <div>
           <h1>List of Items:</h1>
-          <ul>
+          <div className={styles['search-container']}>
+          <div className={styles['search-bar']}>
+      <input
+        type="text"
+        className={styles['search-input']}
+        placeholder="検索..." />
+      <button className={styles['search-button']}>検索</button>
+      </div>
+    </div>
             {data.map((item, index) => (
-              <div>
-                <li key={index}>{item["rank"]}</li>
-                <li key={index}>{item["name"]}</li>
-                <li key={index}>{item["price"]}</li>
-                <li key={index}>{item["review"]}</li>
-                <a href={item["url"]}>{item["url"]}</a>
-                <img src={item["images"][0]["thumbnail"]} />
-              </div>
+              <Row>
+              <Col>
+              <CardTitle className={styles.rank}>No.{item["rank"]}</CardTitle>
+              <Card key={index} className={styles['card']}>
+              <CardBody>
+                <CardText className={styles.title}>{item["name"]}</CardText>
+                <CardText>{item["price"]}</CardText>
+                <CardText>{item["review"]}</CardText>
+                <a href={item["url"]}>この商品のリンクへ</a>
+                <div className={styles.item}>
+                <img src={item["images"][0]["thumbnail"]} alt="Thumbnail"/>
+                </div>
+              </CardBody>
+            </Card>
+            </Col>
+            </Row>
             ))}
-          </ul>
         </div>
       </main>
     </>
