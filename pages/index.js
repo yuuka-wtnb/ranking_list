@@ -1,11 +1,32 @@
 import { images } from "@/next.config";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
-import { Card,CardBody,CardText,CardTitle, Col, Input, Row } from "reactstrap";
-import styles from './styles.module.css'
+import {
+  Card,
+  CardBody,
+  CardText,
+  CardTitle,
+  Col,
+  Input,
+  Row,
+} from "reactstrap";
+import styles from "./styles.module.css";
 
 export default function Home() {
   const [data, Setdata] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  const searchHandler = () => {
+    // itemオブジェクト内のnameプロパティに入力された検索語が含まれているかどうかをチェック
+    //.toLowerCase()を使用して、大文字小文字の区別を無視して検索
+    const filteredData = data.filter(item =>
+      item.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+  
+    // 絞り込まれたアイテムをセットする
+    //絞り込まれたアイテムの配列でdataステートを更新するための関数で絞り込まれたアイテムを新しいデータとしてセット
+    Setdata(filteredData);
+  };
 
   useEffect(() => {
     // データを取得するためのAPIエンドポイント
@@ -40,35 +61,47 @@ export default function Home() {
       <main>
         <div>
           <h1>List of Items:</h1>
-          <div className={styles['search-container']}>
-          <div className={styles['search-bar']}>
-      <input
-        type="text"
-        className={styles['search-input']}
-        placeholder="検索..." />
-      <button className={styles['search-button']}>検索</button>
-      </div>
-    </div>
-            {data.map((item, index) => (
-              <Row>
+          <div className={styles["search-container"]}>
+            <div className={styles["search-bar"]}>
+              <input
+                type="text"
+                className={styles["search-input"]}
+                //searchTextの値が<input>要素の表示される値
+                value={searchText}
+                //onChange属性は、<input>要素の値が変更されたときに呼び出される関数を指定するためのもの
+                //ユーザーが入力を行うたびに、この関数が実行
+                //e.target.valueは、入力フィールドの新しい値
+                //setSearchText関数を呼び出してsearchTextステートを更新
+                //これにより、ユーザーが入力したテキストがsearchTextステートに保存
+                onChange={(e) => setSearchText(e.target.value)}
+                placeholder="検索..."
+              />
+              <button onClick={searchHandler} className={styles["search-button"]}>検索</button>
+            </div>
+          </div>
+          {data.map((item, index) => (
+            <Row>
               <Col>
-              <CardTitle className={styles.rank}>No.{item["rank"]}</CardTitle>
-              <Card key={index} className={styles['card']}>
-              <CardBody>
-                <CardText className={styles.title}>
-                <a href={item["url"]}>{item["name"]}</a>
-                </CardText>
-                <CardText>{item["price"]}</CardText>
-                <CardText>{item["review"]}</CardText>
-                <a href={item["url"]}>この商品のリンクへ</a>
-                <div className={styles.item}>
-                <img src={item["images"][0]["thumbnail"]} alt="Thumbnail"/>
-                </div>
-              </CardBody>
-            </Card>
-            </Col>
+                <CardTitle className={styles.rank}>No.{item["rank"]}</CardTitle>
+                <Card key={index} className={styles["card"]}>
+                  <CardBody>
+                    <CardText className={styles.title}>
+                      <a href={item["url"]}>{item["name"]}</a>
+                    </CardText>
+                    <CardText>{item["price"]}</CardText>
+                    <CardText>{item["review"]}</CardText>
+                    <a href={item["url"]}>この商品のリンクへ</a>
+                    <div className={styles.item}>
+                      <img
+                        src={item["images"][0]["thumbnail"]}
+                        alt="Thumbnail"
+                      />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
             </Row>
-            ))}
+          ))}
         </div>
       </main>
     </>
