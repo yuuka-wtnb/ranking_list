@@ -84,12 +84,12 @@ export default function Home() {
               <Col>
                 <CardTitle className={styles.rank}>No.{item["rank"]}</CardTitle>
                 <Card key={index} className={styles["card"]}>
-                  <CardBody>
+                  <CardBody className={styles.CardBody}>
                     <CardText className={styles.title}>
                       <a href={item["url"]}>{item["name"]}</a>
                     </CardText>
-                    <CardText>{item["price"]}</CardText>
-                    <CardText>{item["review"]}</CardText>
+                    <CardText className={styles["price"]}>¥{item["price"]}</CardText>
+                    <CardText className={styles["review"]}>レビュー：{item["review"]}</CardText>
                     <a href={item["url"]}>この商品のリンクへ</a>
                     <div className={styles.item}>
                       <img
