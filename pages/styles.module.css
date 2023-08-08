@@ -73,6 +73,8 @@
     align-items: center;
     padding: 5px;
     border-radius: 5px;
+    margin-left: 50px;
+    margin-bottom: 20px;
   }
   
   .search-input {
@@ -92,3 +94,17 @@
       height: 40px;
       width: 70px;
   }
+
+  .clear-button{
+    border-radius: 10px;
+    height: 40px;
+    width: 70px;
+    margin-left: 15px;
+}
+
+.favorite-button{
+  border-radius: 10px;
+  height: 40px;
+  width: 200px;
+  margin-left: 15px;
+}

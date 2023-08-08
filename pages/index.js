@@ -2,6 +2,7 @@ import { images } from "@/next.config";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import {
+  Button,
   Card,
   CardBody,
   CardText,
@@ -15,17 +16,48 @@ import styles from "./styles.module.css";
 export default function Home() {
   const [data, Setdata] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [favorites, setFavorites] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
 
   const searchHandler = () => {
     // itemオブジェクト内のnameプロパティに入力された検索語が含まれているかどうかをチェック
     //.toLowerCase()を使用して、大文字小文字の区別を無視して検索
-    const filteredData = data.filter(item =>
+    const filteredData = data.filter((item) =>
       item.name.toLowerCase().includes(searchText.toLowerCase())
     );
-  
+
     // 絞り込まれたアイテムをセットする
     //絞り込まれたアイテムの配列でdataステートを更新するための関数で絞り込まれたアイテムを新しいデータとしてセット
     Setdata(filteredData);
+  };
+
+  const clearHandler = () => {
+    // 元のデータをdataステートにセット
+    Setdata(originalData);
+    setSearchText(""); // クリア時に検索テキストもクリア
+  };
+
+  const favHandler = (item) => {
+    //some メソッドは、配列内の要素のいずれかが指定した条件を満たす場合に true を返す
+    //favorites 配列内に同じrankを持つアイテムが存在するかどうかを確認
+    const isItemInFavorites = favorites.some(
+      (favorite) => favorite.rank === item.rank
+    );
+  
+    if (isItemInFavorites) {
+      // 既にお気に入りに含まれていれば削除
+      setFavorites((prevFavorites) =>
+        prevFavorites.filter((favorite) => favorite.rank !== item.rank)
+      );
+    } else {
+      // お気に入りに追加
+      setFavorites((prevFavorites) => [...prevFavorites, item]);
+    }
+  };
+
+  const showFavoritesHandler = () => {
+    // お気に入りアイテムを表示
+    Setdata(favorites);
   };
 
   useEffect(() => {
@@ -38,6 +70,7 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         Setdata(data["ranking"]);
+        setOriginalData(data["ranking"]);
         console.log(data);
       })
       .catch((error) => {
@@ -76,7 +109,21 @@ export default function Home() {
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="検索..."
               />
-              <button onClick={searchHandler} className={styles["search-button"]}>検索</button>
+              <button
+                onClick={searchHandler}
+                className={styles["search-button"]}
+              >
+                検索
+              </button>
+              <button onClick={clearHandler} className={styles["clear-button"]}>
+                クリア
+              </button>
+              <button
+                onClick={showFavoritesHandler}
+                className={styles["favorite-button"]}
+              >
+                お気に入りを表示
+              </button>
             </div>
           </div>
           {data.map((item, index) => (
@@ -88,9 +135,20 @@ export default function Home() {
                     <CardText className={styles.title}>
                       <a href={item["url"]}>{item["name"]}</a>
                     </CardText>
-                    <CardText className={styles["price"]}>¥{item["price"]}</CardText>
-                    <CardText className={styles["review"]}>レビュー：{item["review"]}</CardText>
+                    <CardText className={styles["price"]}>
+                      ¥{item["price"]}
+                    </CardText>
+                    <CardText className={styles["review"]}>
+                      レビュー：{item["review"]}
+                    </CardText>
                     <a href={item["url"]}>この商品のリンクへ</a>
+                    <br></br>
+                    <Button onClick={() => favHandler(item)}>
+                      {favorites.some((favorite) => favorite.rank === item.rank)
+                        ? "❤︎"
+                        : "♡"}
+                    </Button>
+
                     <div className={styles.item}>
                       <img
                         src={item["images"][0]["thumbnail"]}
