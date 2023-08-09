@@ -1,4 +1,3 @@
-import { images } from "@/next.config";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import {
@@ -8,7 +7,6 @@ import {
   CardText,
   CardTitle,
   Col,
-  Input,
   Row,
 } from "reactstrap";
 import styles from "./styles.module.css";
@@ -18,6 +16,7 @@ export default function Home() {
   const [searchText, setSearchText] = useState("");
   const [favorites, setFavorites] = useState([]);
   const [originalData, setOriginalData] = useState([]);
+  const [sortBy, setSortBy] = useState([]);
 
   const searchHandler = () => {
     // itemオブジェクト内のnameプロパティに入力された検索語が含まれているかどうかをチェック
@@ -43,7 +42,7 @@ export default function Home() {
     const isItemInFavorites = favorites.some(
       (favorite) => favorite.rank === item.rank
     );
-  
+
     if (isItemInFavorites) {
       // 既にお気に入りに含まれていれば削除
       setFavorites((prevFavorites) =>
@@ -58,6 +57,30 @@ export default function Home() {
   const showFavoritesHandler = () => {
     // お気に入りアイテムを表示
     Setdata(favorites);
+  };
+
+  const sortPriceHandler = (method) => {
+    // クリックされた並び替えの方法に応じて商品をソート
+    if (method === "high") {
+      const sortedData = [...data].sort((a, b) => b.price - a.price);
+      Setdata(sortedData);
+    } else if (method === "low") {
+      const sortedData = [...data].sort((a, b) => a.price - b.price);
+      Setdata(sortedData);
+    }
+    setSortBy(method); // ステート更新
+  };
+
+  const sortReviewHandler = (method) => {
+    // クリックされた並び替えの方法に応じて商品をソート
+    if (method === "high") {
+      const sortedData = [...data].sort((a, b) => b.review - a.review);
+      Setdata(sortedData);
+    } else if (method === "low") {
+      const sortedData = [...data].sort((a, b) => a.review - b.review);
+      Setdata(sortedData);
+    }
+    setSortBy(method); // ステート更新
   };
 
   useEffect(() => {
@@ -124,6 +147,23 @@ export default function Home() {
               >
                 お気に入りを表示
               </button>
+              <div className={styles.pricesort}>
+                {/* e はイベントを表し、ユーザーが何かアクションを起こした場所で（target）、
+              そのアクションによって生まれた具体的な情報（value）を取得する*/}
+                <select onChange={(e) => sortPriceHandler(e.target.value)}>
+                  <option value="">価格並び替え</option>
+                  {/* ユーザーがセレクトメニューで「価格が高い順」を選択すると、e.target.value には文字列 "high" */}
+                  <option value="high">価格が高い順</option>
+                  <option value="low">価格が低い順</option>
+                </select>
+              </div>
+              <div className={styles.pricesort}>
+                <select onChange={(e) => sortReviewHandler(e.target.value)}>
+                  <option value="">口コミ並び替え</option>
+                  <option value="high">口コミが高い順</option>
+                  <option value="low">口コミが低い順</option>
+                </select>
+              </div>
             </div>
           </div>
           {data.map((item, index) => (

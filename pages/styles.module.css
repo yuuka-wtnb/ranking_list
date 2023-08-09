@@ -73,7 +73,7 @@
     align-items: center;
     padding: 5px;
     border-radius: 5px;
-    margin-left: 50px;
+    margin-left: 300px;
     margin-bottom: 20px;
   }
   
@@ -107,4 +107,8 @@
   height: 40px;
   width: 200px;
   margin-left: 15px;
+}
+
+.pricesort{
+  margin-left: 20px;
 }
